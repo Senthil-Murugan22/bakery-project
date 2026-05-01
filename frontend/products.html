@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Products - SARS Home Bakers</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="cart.html">Cart 🛒</a>
+  <a href="contact.html">Contact</a>
+
+  <button onclick="logout()">Logout</button>
+</nav>
+
+<h1>Our Products 🍰</h1>
+<h2 id="welcomeMsg"></h2>
+
+<div class="products">
+
+  <div class="card">
+    <img src="./images/plain-cake.jpg">
+    <h3>Plain Cake</h3>
+    <p>₹200</p>
+    <button onclick="addToCart('Plain Cake', 200)">Add to Cart</button>
+  </div>
+
+  <div class="card">
+    <img src="./images/cream-cake.jpg">
+    <h3>Cream Cake</h3>
+    <p>₹400</p>
+    <button onclick="addToCart('Cream Cake', 400)">Add to Cart</button>
+  </div>
+
+  <div class="card">
+    <img src="./images/brownie.jpg">
+    <h3>Brownie</h3>
+    <p>₹150</p>
+    <button onclick="addToCart('Brownie', 150)">Add to Cart</button>
+  </div>
+
+  <div class="card">
+    <img src="./images/cupcake.jpg">
+    <h3>Cup Cake</h3>
+    <p>₹100</p>
+    <button onclick="addToCart('Cup Cake', 100)">Add to Cart</button>
+  </div>
+
+</div>
+
+<script>
+
+const username = localStorage.getItem("username");
+
+if (!username) {
+  window.location.href = "login.html";
+}
+
+document.getElementById("welcomeMsg").innerText =
+  "Welcome, " + username + " 👋";
+
+function addToCart(name, price) {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const existing = cart.find(item => item.name === name);
+
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({
+      name,
+      price: Number(price),
+      quantity: 1
+    });
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert(name + " added to cart 🛒");
+}
+
+function logout() {
+  localStorage.removeItem("username");
+  window.location.href = "login.html";
+}
+
+</script>
+
+</body>
+</html>
