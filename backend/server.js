@@ -16,6 +16,33 @@ app.use(cors({
   credentials: true
 }));
 
+/* ------------------- INIT DB ------------------- */
+const initDB = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name TEXT,
+        email TEXT UNIQUE,
+        password TEXT
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS orders (
+        id SERIAL PRIMARY KEY,
+        username TEXT,
+        items JSON,
+        total INT
+      );
+    `);
+
+    console.log("Tables ready ✅");
+  } catch (err) {
+    console.error("DB Init Error:", err);
+  }
+};
+
 /* ------------------- HEALTH CHECK ------------------- */
 app.get("/", (req, res) => {
   res.send("Sweet Bakery API Running 🍰");
@@ -143,6 +170,7 @@ app.post("/checkout", async (req, res) => {
 /* ------------------- START SERVER ------------------- */
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log("Server running on port", PORT);
+  await initDB(); // ✅ create tables automatically
 });
