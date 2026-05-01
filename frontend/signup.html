@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Signup</title>
+  <title>Signup - SARS Home Bakers</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- API CONFIG -->
+  <script src="api.js"></script>
 </head>
 
 <body>
@@ -39,7 +42,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/signup", {
+    const response = await fetch(`${API_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -47,13 +50,13 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
       body: JSON.stringify({ name, email, password })
     });
 
-    const data = await response.text();
+    const data = await response.json();
 
-    alert(data);
-
-    // Optional: redirect to login after signup
-    if (response.ok) {
+    if (data.success) {
+      alert("Signup successful!");
       window.location.href = "login.html";
+    } else {
+      alert(data.message || "Signup failed");
     }
 
   } catch (error) {
@@ -62,6 +65,6 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   }
 });
 </script>
-<script src="api.js"></script>
+
 </body>
 </html>
