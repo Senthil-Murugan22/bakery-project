@@ -4,6 +4,7 @@
   <title>Cart - SARS Home Bakers</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <!-- NAVBAR -->
@@ -24,6 +25,8 @@
 <button onclick="checkout()">Checkout</button>
 
 <script>
+
+const API_BASE = "https://bakery-project-uwo6.onrender.com";
 
 const username = localStorage.getItem("username");
 
@@ -106,7 +109,7 @@ async function checkout() {
   }, 0);
 
   try {
-    const response = await fetch("http://localhost:3000/checkout", {
+    const response = await fetch(`${API_BASE}/checkout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -121,7 +124,7 @@ async function checkout() {
     const data = await response.json();
 
     if (data.success) {
-      alert("Order placed successfully");
+      alert("Order placed successfully 🎉");
       localStorage.removeItem("cart");
       location.reload();
     } else {
@@ -140,6 +143,6 @@ function logout() {
 }
 
 </script>
-<script src="api.js"></script>
+
 </body>
 </html>

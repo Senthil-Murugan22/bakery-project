@@ -4,6 +4,7 @@
   <title>Products - SARS Home Bakers</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <nav>
@@ -50,9 +51,9 @@
 </div>
 
 <script>
-
 const username = localStorage.getItem("username");
 
+// protect page
 if (!username) {
   window.location.href = "login.html";
 }
@@ -70,7 +71,7 @@ function addToCart(name, price) {
   } else {
     cart.push({
       name,
-      price: Number(price),
+      price,
       quantity: 1
     });
   }
@@ -82,10 +83,10 @@ function addToCart(name, price) {
 
 function logout() {
   localStorage.removeItem("username");
+  localStorage.removeItem("cart");
   window.location.href = "login.html";
 }
-
 </script>
-<script src="api.js"></script>
+
 </body>
 </html>
