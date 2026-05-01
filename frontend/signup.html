@@ -36,6 +36,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
+  // basic validation
   if (!name || !email || !password) {
     alert("Please fill all fields");
     return;
@@ -52,9 +53,13 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
 
     const data = await response.json();
 
-    if (data.success) {
+    if (response.ok && data.success) {
       alert("Signup successful!");
-      window.location.href = "login.html";
+
+      // optional: auto login feel
+      localStorage.setItem("username", name);
+
+      window.location.href = "products.html";
     } else {
       alert(data.message || "Signup failed");
     }

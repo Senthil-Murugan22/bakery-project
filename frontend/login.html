@@ -3,9 +3,6 @@
 <head>
   <title>Login - SARS Home Bakers</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- API CONFIG -->
-  <script src="api.js"></script>
 </head>
 
 <body>
@@ -28,6 +25,9 @@
 </div>
 
 <script>
+
+const API_BASE = "https://bakery-project-uwo6.onrender.com";
+
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -35,7 +35,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value.trim();
 
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${API_BASE}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -46,10 +46,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const data = await response.json();
 
     if (data.success) {
-      // store user session
       localStorage.setItem("username", data.name);
-
-      // redirect to products page
       window.location.href = "products.html";
     } else {
       alert(data.message || "Invalid credentials");
@@ -57,14 +54,15 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   } catch (error) {
     console.error(error);
-    alert("Server error. Please try again.");
+    alert("Server not reachable. Try again in a few seconds.");
   }
 });
 
-// 🔐 Auto redirect if already logged in
+// auto redirect
 if (localStorage.getItem("username")) {
   window.location.href = "products.html";
 }
+
 </script>
 
 </body>

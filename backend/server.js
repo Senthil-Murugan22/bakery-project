@@ -5,8 +5,16 @@ const pool = require("./db");
 
 const app = express();
 
-app.use(cors());
+/* ------------------- MIDDLEWARE ------------------- */
 app.use(express.json());
+
+app.use(cors({
+  origin: [
+    "https://sarshomebakers.netlify.app"
+  ],
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 
 /* ------------------- HEALTH CHECK ------------------- */
 app.get("/", (req, res) => {
@@ -18,14 +26,23 @@ app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    // check existing user
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields required"
+      });
+    }
+
     const existingUser = await pool.query(
       "SELECT * FROM users WHERE email=$1",
       [email]
     );
 
     if (existingUser.rows.length > 0) {
-      return res.json({ success: false, message: "Email already exists" });
+      return res.json({
+        success: false,
+        message: "Email already exists"
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -35,11 +52,17 @@ app.post("/signup", async (req, res) => {
       [name, email, hashedPassword]
     );
 
-    res.json({ success: true, message: "Signup successful" });
+    res.json({
+      success: true,
+      message: "Signup successful"
+    });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("Signup Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 });
 
@@ -54,7 +77,10 @@ app.post("/login", async (req, res) => {
     );
 
     if (user.rows.length === 0) {
-      return res.json({ success: false, message: "User not found" });
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
     }
 
     const valid = await bcrypt.compare(
@@ -68,12 +94,18 @@ app.post("/login", async (req, res) => {
         name: user.rows[0].name
       });
     } else {
-      res.json({ success: false, message: "Invalid credentials" });
+      res.json({
+        success: false,
+        message: "Invalid credentials"
+      });
     }
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("Login Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 });
 
@@ -82,16 +114,29 @@ app.post("/checkout", async (req, res) => {
   const { username, cart, total } = req.body;
 
   try {
+    if (!username || !cart || !total) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order data"
+      });
+    }
+
     await pool.query(
       "INSERT INTO orders (username, items, total) VALUES ($1, $2, $3)",
       [username, JSON.stringify(cart), total]
     );
 
-    res.json({ success: true, message: "Order placed successfully" });
+    res.json({
+      success: true,
+      message: "Order placed successfully"
+    });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: "Error placing order" });
+    console.error("Checkout Error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Error placing order"
+    });
   }
 });
 

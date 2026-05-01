@@ -3,6 +3,9 @@
 <head>
   <title>Products - SARS Home Bakers</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- API CONFIG -->
+  <script src="api.js"></script>
 </head>
 
 <body>
@@ -71,7 +74,7 @@ function addToCart(name, price) {
   } else {
     cart.push({
       name,
-      price,
+      price: Number(price),   // ✅ ensure number (fix for total=0 issue)
       quantity: 1
     });
   }
